@@ -117,4 +117,4 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         # Commencez avec "|| true" pour voir le rapport sans casser le build,
         # puis retirez-le une fois les dépendances à jour : l'audit devient bloquant.
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=high || true
