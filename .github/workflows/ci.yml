@@ -1,0 +1,44 @@
+# =============================================================================
+# CI TaskFlow — orchestration : appelle le workflow réutilisable
+# pour le front (.) et pour l'API (api/).
+# =============================================================================
+name: CI
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+# Requis par dorny/test-reporter (crée un "check" sur le commit)
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+# Un push sur la même branche annule le run précédent encore en cours
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  front:
+    name: Front
+    uses: ./.github/workflows/reusable-node-ci.yml
+    with:
+      working-directory: .
+      upload-artifact: true
+      artifact-name: front
+      node-versions: '["20", "22"]'
+
+  api:
+    name: API
+    uses: ./.github/workflows/reusable-node-ci.yml
+    with:
+      working-directory: api
+      artifact-name: api
