@@ -159,3 +159,4 @@ jobs:
           curl -fsS -H "Content-Type: application/json" \
             -d "{\"content\":\"TaskFlow prod — run #${{ github.run_number }} : $STATUS\"}" \
             "${{ secrets.DISCORD_WEBHOOK }}"
+        continue-on-error: true
