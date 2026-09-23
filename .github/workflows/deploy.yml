@@ -32,7 +32,7 @@ jobs:
       - name: Build du front
         run: npm run build
       - name: Empaqueter dist/ + api/
-        run: tar czf taskflow-${{ github.run_number }}.tar.gz dist api --exclude=api/node_modules --exclude=api/reports --exclude=api/coverage
+        run: tar czf taskflow-${{ github.run_number }}.tar.gz --exclude=api/node_modules --exclude=api/reports --exclude=api/coverage dist api
       - uses: actions/upload-artifact@v4
         with:
           name: taskflow-build
