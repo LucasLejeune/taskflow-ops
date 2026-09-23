@@ -1,29 +1,20 @@
-# =============================================================================
-# Workflow RÉUTILISABLE : CI d'un projet Node (lint -> test -> build)
-# Appelé par ci.yml pour le front (.) et pour l'API (api/).
-# =============================================================================
 name: Reusable Node CI
 on:
   workflow_call:
     inputs:
       working-directory:
-        description: Répertoire du projet Node
         type: string
         required: true
       node-version:
-        description: Version de Node.js
         type: string
         default: '20'
       upload-artifact:
-        description: Publier le build (dist/) en artefact
         type: boolean
         default: false
       artifact-name:
-        description: Suffixe des artefacts (dist-<nom>, coverage-<nom>)
         type: string
         default: project
       node-versions:
-        description: Liste JSON des versions Node pour la matrix (bonus)
         type: string
         default: '["20"]'
 
@@ -65,7 +56,6 @@ jobs:
       - name: Publier le rapport de tests
         uses: dorny/test-reporter@v1
         if: always()
-        # même si les tests échouent : c'est justement là qu'on veut le rapport
         with:
           name: Tests ${{ inputs.artifact-name }} (Node ${{ matrix.node }})
           path: ${{ inputs.working-directory }}/reports/junit.xml
@@ -115,6 +105,4 @@ jobs:
       - uses: actions/checkout@v4
       - name: npm audit (vulnérabilités high/critical)
         working-directory: ${{ inputs.working-directory }}
-        # Commencez avec "|| true" pour voir le rapport sans casser le build,
-        # puis retirez-le une fois les dépendances à jour : l'audit devient bloquant.
         run: npm audit --audit-level=high || true

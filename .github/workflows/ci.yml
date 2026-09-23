@@ -1,7 +1,3 @@
-# =============================================================================
-# CI TaskFlow — orchestration : appelle le workflow réutilisable
-# pour le front (.) et pour l'API (api/).
-# =============================================================================
 name: CI
 on:
   push:
@@ -15,13 +11,11 @@ on:
       - '**.md'
       - 'docs/**'
 
-# Requis par dorny/test-reporter (crée un "check" sur le commit)
 permissions:
   contents: read
   checks: write
   pull-requests: write
 
-# Un push sur la même branche annule le run précédent encore en cours
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
