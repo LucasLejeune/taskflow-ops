@@ -1,4 +1,4 @@
-# QCM — Formation M2 DevOps : Automatisation du système CI et monitoring (corrigé)
+# QCM — Formation M2 DevOps : Automatisation du système CI et monitoring
 
 **Durée** : 45 minutes
 **Questions** : 30
@@ -291,5 +291,3 @@ concurrency:
 [ ] D. Que le disque a été démonté il y a 4 heures.
 
 ---
-
-**Fin du corrigé — 30/30 réponses renseignées.**
