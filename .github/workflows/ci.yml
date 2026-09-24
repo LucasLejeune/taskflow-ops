@@ -36,3 +36,27 @@ jobs:
     with:
       working-directory: api
       artifact-name: api
+
+  lint-monitoring:
+    name: Lint monitoring
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: promtool check rules
+        uses: docker://prom/prometheus:v2.53.0
+        with:
+          entrypoint: promtool
+          args: check rules monitoring/prometheus/rules/taskflow.yml
+
+      - name: promtool check config
+        uses: docker://prom/prometheus:v2.53.0
+        with:
+          entrypoint: promtool
+          args: check config --syntax-only monitoring/prometheus/prometheus.yml
+
+      - name: amtool check-config
+        uses: docker://prom/alertmanager:v0.27.0
+        with:
+          entrypoint: amtool
+          args: check-config monitoring/alertmanager/alertmanager.example.yml
