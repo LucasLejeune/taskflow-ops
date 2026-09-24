@@ -1,6 +1,6 @@
 # TaskFlow Ops
 
-![CI](https://github.com/<vous>/taskflow-ops/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/LucasLejeune/taskflow-ops/actions/workflows/ci.yml/badge.svg)
 
 ## QCM
 
