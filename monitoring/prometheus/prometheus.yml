@@ -18,14 +18,14 @@ scrape_configs:
   - job_name: taskflow-api
     metrics_path: /metrics
     static_configs:
-      - targets: ['192.168.64.11:80']
+      - targets: ['172.22.211.134:80']
         labels: { env: staging }
-      - targets: ['192.168.64.12:80']
+      - targets: ['172.22.215.59:80']
         labels: { env: prod }
 
   - job_name: node-vms
     static_configs:
-      - targets: ['192.168.64.11:9100']
+      - targets: ['172.22.211.134:9100']
         labels: { env: staging }
-      - targets: ['192.168.64.12:9100']
+      - targets: ['172.22.215.59:9100']
         labels: { env: prod }
