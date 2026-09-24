@@ -59,4 +59,4 @@ jobs:
         uses: docker://prom/alertmanager:v0.27.0
         with:
           entrypoint: amtool
-          args: check-config monitoring/alertmanager/alertmanager.yml
+          args: check-config monitoring/alertmanager/alertmanager.example.yml
