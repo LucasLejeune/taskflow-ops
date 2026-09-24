@@ -121,9 +121,9 @@
 
 - name: Supprimer les releases au-delà de keep_releases
   ansible.builtin.file:
-    path: "{{ item.path }}"
+    path: "{{ item }}"
     state: absent
   loop: "{{ (releases.files | sort(attribute='mtime') | map(attribute='path') | list)[:-keep_releases] }}"
   loop_control:
-    label: "{{ item.path | basename }}"
+    label: "{{ item | basename }}"
   when: releases.files | length > keep_releases
