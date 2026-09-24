@@ -32,7 +32,7 @@ jobs:
       - name: Build du front
         run: npm run build
       - name: Empaqueter dist/ + api/
-        run: tar czf taskflow-${{ github.run_number }}.tar.gz --exclude=api/node_modules --exclude=api/reports --exclude=api/coverage dist api
+        run: tar czf taskflow-${{ github.run_number }}.tar.gz --exclude=api/node_modules --exclude=api/reports --exclude=api/coverage dist api 
       - uses: actions/upload-artifact@v4
         with:
           name: taskflow-build
@@ -86,6 +86,22 @@ jobs:
           grep -q '"status":"ok"' health.json
           grep -q "\"version\":\"${{ github.run_number }}\"" health.json
 
+  annotate-grafana-staging:
+    name: Annotation Grafana (staging)
+    needs: [smoke-staging]
+    if: always() && needs.smoke-staging.result == 'success'
+    runs-on: [self-hosted, lab]
+    steps:
+      - name: Poser l'annotation de déploiement
+        env:
+          GRAFANA_URL: ${{ vars.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+        run: |
+          curl -fsS -X POST "$GRAFANA_URL/api/annotations" \
+            -H "Authorization: Bearer $GRAFANA_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"tags":["deploy","staging"],"text":"Deploy #${{ github.run_number }} — ${{ github.sha }} par ${{ github.actor }}"}'
+
   deploy-prod:
     name: Deploy production
     needs: smoke-staging
@@ -127,6 +143,22 @@ jobs:
           curl -fsS --retry 5 --retry-delay 2 "http://${{ needs.deploy-prod.outputs.target_ip }}/health" -o health.json
           grep -q '"status":"ok"' health.json
 
+  annotate-grafana-prod:
+    name: Annotation Grafana (production)
+    needs: [smoke-prod]
+    if: always() && needs.smoke-prod.result == 'success'
+    runs-on: [self-hosted, lab]
+    steps:
+      - name: Poser l'annotation de déploiement
+        env:
+          GRAFANA_URL: ${{ vars.GRAFANA_URL }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+        run: |
+          curl -fsS -X POST "$GRAFANA_URL/api/annotations" \
+            -H "Authorization: Bearer $GRAFANA_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"tags":["deploy","production"],"text":"Deploy #${{ github.run_number }} — ${{ github.sha }} par ${{ github.actor }}"}'
+
   rollback:
     name: Rollback production
     if: github.event_name == 'workflow_dispatch' && inputs.rollback_to != ''
@@ -160,3 +192,4 @@ jobs:
             -d "{\"content\":\"TaskFlow prod — run #${{ github.run_number }} : $STATUS\"}" \
             "${{ secrets.DISCORD_WEBHOOK }}"
         continue-on-error: true
+        
